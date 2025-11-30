@@ -3,12 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Eres gey?</title>
-    <link rel="stylesheet" href="style.css">
+    <title>¿Eres gay?</title>
+    <link rel="icon" type="image/png" href="1234.png">
+    
+    <!-- Google Translate -->
+    <script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'es',
+            includedLanguages: 'en,es',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+    }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Estilos para el traductor */
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+        
+        #google_translate_element {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .goog-te-gadget {
+            font-size: 0 !important;
+        }
+        
+        .goog-te-gadget .goog-te-combo {
+            margin: 4px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+        body {
+            top: 0px !important;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 3.5em;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .botones {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 20px 50px;
+            font-size: 1.8em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .btn-si {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-no {
+            background: linear-gradient(45deg, #f44336, #da190b);
+            color: white;
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Efectos cuando se presiona NO */
+        .no-presionado .btn-si {
+            transform: scale(1.3);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.6);
+        }
+
+        .no-presionado .btn-no {
+            transform: scale(0.7);
+            opacity: 0.8;
+        }
+
+        /* Canvas para el confeti */
+        #confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Efecto de chispas */
+        .chispas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        @keyframes volar {
+            to {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 30px;
+            }
+            
+            .botones {
+                gap: 20px;
+                flex-direction: column;
+            }
+            
+            .btn {
+                padding: 15px 40px;
+                font-size: 1.5em;
+                width: 180px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Selector de idiomas -->
+    <div id="google_translate_element"></div>
+
     <div class="container">
-        <h1 id="titulo">¿Eres gey? </h1>
+        <h1 id="titulo">¿Eres gay?</h1>
         <div class="botones">
             <button id="siBtn" class="btn btn-si">SI</button>
             <button id="noBtn" class="btn btn-no">NO</button>
@@ -18,7 +202,180 @@
     
     <!-- Librería de confeti -->
     <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Elementos del DOM
+        const titulo = document.getElementById('titulo');
+        const siBtn = document.getElementById('siBtn');
+        const noBtn = document.getElementById('noBtn');
+        const container = document.querySelector('.container');
+        const confettiCanvas = document.getElementById('confetti');
+
+        // Configuración del confeti
+        const confettiSettings = { target: 'confetti' };
+        const confetti = new ConfettiGenerator(confettiSettings);
+
+        // Movimientos aleatorios para el botón NO
+        const movimientos = [
+            { x: 200, y: -100 },
+            { x: -150, y: 100 },
+            { x: 100, y: -150 },
+            { x: -200, y: -50 },
+            { x: 150, y: 150 },
+            { x: -100, y: 200 }
+        ];
+
+        let movimientoIndex = 0;
+
+        // Función para reproducir sonido de CELEBRACIÓN (botón SÍ)
+        function sonidoSi() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Melodía feliz y ascendente
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // Do
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // Mi
+                oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // Sol
+                oscillator.frequency.setValueAtTime(1046.50, audioContext.currentTime + 0.3); // Do alto
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio no disponible');
+            }
+        }
+
+        // Función para reproducir sonido de ERROR (botón NO)
+        function sonidoNo() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Sonido descendente (como error)
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.type = 'sawtooth'; // Sonido más áspero
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log('Audio no disponible');
+            }
+        }
+
+        // Evento para el botón NO
+        noBtn.addEventListener('click', function() {
+            // Reproducir sonido de NO
+            sonidoNo();
+            
+            // Agregar clase para los efectos CSS
+            container.classList.add('no-presionado');
+            
+            // Mover el botón NO a una posición aleatoria
+            const movimiento = movimientos[movimientoIndex];
+            noBtn.style.transform = `translate(${movimiento.x}px, ${movimiento.y}px) scale(0.7)`;
+            
+            // Incrementar el índice para el próximo movimiento
+            movimientoIndex = (movimientoIndex + 1) % movimientos.length;
+            
+            // Quitar la clase después de un tiempo para permitir nuevos efectos
+            setTimeout(() => {
+                container.classList.remove('no-presionado');
+            }, 1000);
+        });
+
+        // Evento para el botón SÍ
+        siBtn.addEventListener('click', function() {
+            // Reproducir sonido de SÍ
+            sonidoSi();
+            
+            // Cambiar el título
+            titulo.textContent = '¡Felizidades! Lo suponía';
+            titulo.style.color = '#4CAF50';
+            titulo.style.fontSize = '2.8em';
+            
+            // Iniciar el confeti
+            confetti.render();
+            
+            // Crear efecto de chispas adicional
+            crearChispas();
+            
+            // Ocultar los botones
+            siBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+            
+            // Agregar mensaje adicional después de 2 segundos
+            setTimeout(() => {
+                const mensajeExtra = document.createElement('p');
+                mensajeExtra.textContent = '¡Bienvenido al club! 🎉';
+                mensajeExtra.style.marginTop = '20px';
+                mensajeExtra.style.fontSize = '1.8em';
+                mensajeExtra.style.color = '#666';
+                container.appendChild(mensajeExtra);
+            }, 2000);
+        });
+
+        // Función para crear efecto de chispas
+        function crearChispas() {
+            const chispasContainer = document.createElement('div');
+            chispasContainer.className = 'chispas';
+            document.body.appendChild(chispasContainer);
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const chispa = document.createElement('div');
+                    chispa.style.position = 'absolute';
+                    chispa.style.width = '10px';
+                    chispa.style.height = '10px';
+                    chispa.style.background = getColorAleatorio();
+                    chispa.style.borderRadius = '50%';
+                    chispa.style.left = '50%';
+                    chispa.style.top = '50%';
+                    chispa.style.boxShadow = '0 0 10px currentColor';
+                    
+                    const angulo = Math.random() * Math.PI * 2;
+                    const distancia = 100 + Math.random() * 200;
+                    const duracion = 1 + Math.random() * 1;
+                    
+                    chispa.style.animation = `volar ${duracion}s ease-out forwards`;
+                    chispa.style.setProperty('--x', Math.cos(angulo) * distancia + 'px');
+                    chispa.style.setProperty('--y', Math.sin(angulo) * distancia + 'px');
+                    
+                    chispasContainer.appendChild(chispa);
+                    
+                    // Eliminar la chispa después de la animación
+                    setTimeout(() => {
+                        chispa.remove();
+                    }, duracion * 1000);
+                }, i * 50);
+            }
+            
+            // Eliminar el contenedor después de que terminen todas las chispas
+            setTimeout(() => {
+                chispasContainer.remove();
+            }, 3000);
+        }
+
+        // Función para obtener color aleatorio
+        function getColorAleatorio() {
+            const colores = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFA500', '#FF69B4'];
+            return colores[Math.floor(Math.random() * colores.length)];
+        }
+    </script>
 </body>
 </html>
-
