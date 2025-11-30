@@ -6,7 +6,20 @@ const container = document.querySelector('.container');
 const confettiCanvas = document.getElementById('confetti');
 
 // Configuración del confeti
-const confettiSettings = { target: 'confetti' };
+const confettiSettings = { 
+    target: 'confetti',
+    max: 150,
+    size: 1.5,
+    animate: true,
+    colors: [
+        [255, 0, 0],
+        [0, 255, 0], 
+        [0, 0, 255],
+        [255, 255, 0],
+        [255, 0, 255],
+        [0, 255, 255]
+    ]
+};
 const confetti = new ConfettiGenerator(confettiSettings);
 
 // Movimientos aleatorios para el botón NO
@@ -22,29 +35,28 @@ const movimientos = [
 let movimientoIndex = 0;
 
 // Evento para el botón NO
-noBtn.addEventListener('click', function() {
-    // Agregar clase para los efectos CSS
-    container.classList.add('no-presionado');
-    
-    // Mover el botón NO a una posición aleatoria
-    const movimiento = movimientos[movimientoIndex];
-    noBtn.style.transform = `translate(${movimiento.x}px, ${movimiento.y}px) scale(0.7)`;
-    
-    // Incrementar el índice para el próximo movimiento
-    movimientoIndex = (movimientoIndex + 1) % movimientos.length;
-    
-    // Quitar la clase después de un tiempo para permitir nuevos efectos
-    setTimeout(() => {
-        container.classList.remove('no-presionado');
-    }, 1000);
+noBtn.addEventListener('mouseover', function() {
+    moveButton();
 });
+
+noBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    moveButton();
+});
+
+function moveButton() {
+    const movimiento = movimientos[movimientoIndex];
+    noBtn.style.transform = `translate(${movimiento.x}px, ${movimiento.y}px)`;
+    
+    movimientoIndex = (movimientoIndex + 1) % movimientos.length;
+}
 
 // Evento para el botón SÍ
 siBtn.addEventListener('click', function() {
     // Cambiar el título
     titulo.textContent = '¡Felizidades! Lo suponía';
     titulo.style.color = '#4CAF50';
-    titulo.style.fontSize = '2.2em';
+    titulo.style.fontSize = '2.5em';
     
     // Iniciar el confeti
     confetti.render();
@@ -52,7 +64,7 @@ siBtn.addEventListener('click', function() {
     // Crear efecto de chispas adicional
     crearChispas();
     
-    // Reproducir sonido de celebración (opcional)
+    // Reproducir sonido de celebración
     reproducirSonidoCelebracion();
     
     // Ocultar los botones
@@ -66,6 +78,7 @@ siBtn.addEventListener('click', function() {
         mensajeExtra.style.marginTop = '20px';
         mensajeExtra.style.fontSize = '1.5em';
         mensajeExtra.style.color = '#666';
+        mensajeExtra.style.fontWeight = 'bold';
         container.appendChild(mensajeExtra);
     }, 2000);
 });
@@ -100,14 +113,18 @@ function crearChispas() {
             
             // Eliminar la chispa después de la animación
             setTimeout(() => {
-                chispa.remove();
+                if (chispa.parentNode) {
+                    chispa.remove();
+                }
             }, duracion * 1000);
         }, i * 50);
     }
     
     // Eliminar el contenedor después de que terminen todas las chispas
     setTimeout(() => {
-        chispasContainer.remove();
+        if (chispasContainer.parentNode) {
+            chispasContainer.remove();
+        }
     }, 3000);
 }
 
@@ -117,9 +134,8 @@ function getColorAleatorio() {
     return colores[Math.floor(Math.random() * colores.length)];
 }
 
-// Función para reproducir sonido de celebración
+// Función para reproducir sonido de celebración CORREGIDA
 function reproducirSonidoCelebracion() {
-    // Crear un sonido simple usando el audio web API
     try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioContext.createOscillator();
@@ -133,7 +149,7 @@ function reproducirSonidoCelebracion() {
         
         oscillator.start();
         
-        // Cambiar frecuencias para crear una melodía festiva
+        // Cambiar frecuencias para crear una melodía festiva (CORREGIDO)
         oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // Mi
         oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // Sol
         oscillator.frequency.setValueAtTime(1046.50, audioContext.currentTime + 0.3); // Do alto
@@ -145,15 +161,3 @@ function reproducirSonidoCelebracion() {
         console.log('El audio no está disponible');
     }
 }
-
-// Agregar la animación CSS para las chispas dinámicamente
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes volar {
-        to {
-            transform: translate(var(--x), var(--y));
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
